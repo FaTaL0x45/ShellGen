@@ -7,13 +7,18 @@
 
 import sys
 import os
+import subprocess
 
 class bcolors:
 	DARKPURPLE = "\033[1;35m"
-	DARKGREEN = "\033[1;32m"
+	DARKGREEN = '\033[92m'
 	YELLOW = '\033[93m'
 	RED = '\033[91m'
 	ENDC = "\033[1;m"
+
+# force https for git
+def git_https_force():
+	subprocess.Popen('git config --global url."https://github.com/".insteadOf git@github.com:;git config --global url."https://".insteadOf git://', shell=True).wait()
 
 def print_info(message):
     print((bcolors.RED) + ("[*] ") + (bcolors.YELLOW) + (str(message)))
@@ -21,26 +26,35 @@ def print_info(message):
 def print_shell(message):
     print((bcolors.DARKGREEN) + ("[*] ") + (bcolors.RED) + (str(message)) + (bcolors.ENDC))
 
+# force https
+git_https_force()
 
-__version__ = 0.1
+# try to update ourself first
+print_info("Trying to update myself first... Then will generate the shellcode...")
+subprocess.Popen("git pull", shell=True).wait()
 
-banner = """
+
+__version__ = 0.2
+
+banner = bcolors.DARKGREEN + """
 ███████╗██╗  ██╗███████╗██╗     ██╗      ██████╗ ███████╗███╗   ██╗
 ██╔════╝██║  ██║██╔════╝██║     ██║     ██╔════╝ ██╔════╝████╗  ██║
 ███████╗███████║█████╗  ██║     ██║     ██║  ███╗█████╗  ██╔██╗ ██║
 ╚════██║██╔══██║██╔══╝  ██║     ██║     ██║   ██║██╔══╝  ██║╚██╗██║
 ███████║██║  ██║███████╗███████╗███████╗╚██████╔╝███████╗██║ ╚████║
 ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝
-"""
+""" +bcolors.ENDC
 banner += """
-Version: """ + str(__version__) + """\n
+Version: """ + bcolors.YELLOW + str(__version__) + bcolors.DARKGREEN + """\n
 Author: AgentWhite (@_agentwhite) (github.com/realagentwhite)"""
 banner += """
 Reverse shell generator based on examples pulled from:
 https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md
 http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet
-This is uses the tun0 IPv4 address. Just specify a listening port. copy. paste. go.
-"""
+This is uses the tun0 IPv4 address. Enter a specific port after calling the script
+
+USAGE: ./shellgen.py <port>
+""" + bcolors.ENDC
 
 def return_shells(shell, ip, port):
 	if shell == "all":
@@ -162,7 +176,11 @@ os.system("clear")
 print(banner)
 
 if len(sys.argv) != 2:
-	print("Usage: ./shellgen.py PORT")
+	print("Usage: %s <port>" % str(sys.argv[0]))
+elif len(sys.argv[1]) > 5:
+	print_info("There is a max of ports up to 65535")
+	print_info("You entered %s"%sys.argv[1])
+	sys.exit()
 else:
 	try:
 		ip = os.popen('ip addr show tun0').read().split("inet ")[1].split("/")[0]
@@ -178,6 +196,10 @@ else:
 		data = input("Enter the type of shell: ").lower()
 		
 		return_shells(data, ip, port)
+
+	except KeyboardInterrupt:
+		print_shell("Exiting...now")
+		sys.exit()
 
 	except IndexError:
 		print("\nCheck that you are connected to the VPN")
