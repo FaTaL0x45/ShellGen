@@ -213,7 +213,6 @@ def only_port_passed():
 if __name__ == "__main__":
 	os.system("clear")
 	print(banner())
-	print(len(sys.argv))
 
 	if len(sys.argv) == 1:
 		print_info("Usage: %s <LHOST> <LPORT>" % str(sys.argv[0]))
