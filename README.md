@@ -13,4 +13,3 @@ You can choose a specifi payload from the list or enter **all** to print out all
 List of things to do:
 
 - Clean up some code
-- Add the option to use an IP passed in the arguments

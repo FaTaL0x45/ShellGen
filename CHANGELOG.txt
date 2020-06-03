@@ -1,0 +1,17 @@
+~~~~~~~~~~~~
+version: 0.3
+~~~~~~~~~~~~
+
+- Added support for the user to enter a desired IP in the arguments when calling the program
+
+~~~~~~~~~~~~
+version: 0.2
+~~~~~~~~~~~~
+
+- Fix some bugs that would output in the terminal that were not necessary
+
+~~~~~~~~~~~~
+version: 0.1
+~~~~~~~~~~~~
+
+- Creation of the living shellcode generator
