@@ -15,7 +15,7 @@ You can choose a specifi payload from the list or enter **all** to print out all
 
 List of things to do:
 
-- Clean up some code
+- Clean up some code (if possible without ruining the program)
 - Add another feature to specify in the arguments the type of shellcode to generate instead of using a prompt
 
 

@@ -1,4 +1,15 @@
 ~~~~~~~~~~~~
+version: 0.4
+~~~~~~~~~~~~
+
+- Cleared up some code. Put the shellcodes into src/core.py and the design/colors into src/design.py
+- Added support for python2 but python3 should be used
+- Fixed a typo in powershell return function to return powershell1 not powershell
+- Added banner to README.md
+- Added a new cool look to the input request. And added some coloring to it when typing the input
+- Added a new shell 'curl'
+
+~~~~~~~~~~~~
 version: 0.3
 ~~~~~~~~~~~~
 
