@@ -8,6 +8,20 @@ This is a simple script that will generate a specific or all shellcodes for CTFs
 - `chmod +x shellgen.py`
 - `./shellgen.py <LPORT>`
 - `./shellgen.py <LHOST> <LPORT>`
+- `./shellgen.py <LHOST> <LPORT> <SHELL TYPE>`
+
+There is also a new help menu:
+- `./shellgen.py -h`
+- `./shellgen.py --help`
+
+To just run the update:
+- `./shellgen.py -u`
+- `./shellgen.py --update`
+
+List shells available:
+- `./shellgen.py --list-shells`
+- `./shellgen.py --shells`
+
 
 You can choose a specifi payload from the list or enter **all** to print out all the shellcodes.
 
