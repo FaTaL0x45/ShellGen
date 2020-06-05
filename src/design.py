@@ -15,3 +15,5 @@ def print_shell(message):
 def print_error(message):
     print((bcolors.DARKGREEN) + ("[*] ") + (bcolors.RED) + (str(message)) + (bcolors.ENDC))
 
+def print_shell_types(message):
+	print((bcolors.RED) + ("[*] ") + (bcolors.YELLOW) + (str(message)) + (bcolors.ENDC))

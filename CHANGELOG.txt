@@ -1,4 +1,15 @@
 ~~~~~~~~~~~~
+version: 0.5
+~~~~~~~~~~~~
+
+- Added the note to re-run the script if a new update came out
+- Added a new nice feature that will allow the user to enter in the arguments the type of shell to use as long as it's in the list
+- Added a help menu
+- Feature to only update and exit when the specified argument is passed in arguments
+- Added MIT License
+- Probably missing out on something but you'll find it if it's not here ;)
+
+~~~~~~~~~~~~
 version: 0.4
 ~~~~~~~~~~~~
 
