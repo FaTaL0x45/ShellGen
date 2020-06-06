@@ -1,4 +1,11 @@
 ~~~~~~~~~~~~
+version: 0.6
+~~~~~~~~~~~~
+
+- Add the function to add shellgen to /usr/local/bin to run shellgen from anywhere in the terminal
+- Update the README.md file
+
+~~~~~~~~~~~~
 version: 0.5
 ~~~~~~~~~~~~
 

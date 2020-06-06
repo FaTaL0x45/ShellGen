@@ -19,6 +19,18 @@ except: pass
 # List of shells available
 shells = ["bash","go","nc","curl","netcat","msfvenom","perl","php","python","powershell","ruby","xterm"]
 
+def create_launcher():
+	try:
+		"""
+		Create a launcher to execute shellgen from the commandline.
+		"""
+		cwd = os.getcwd()
+		filewrite = open("/usr/local/bin/shellgen", "w")
+		filewrite.write('#!/bin/sh\ncd %s\nchmod +x shellgen\n./shellgen "$@"' % (cwd))
+		filewrite.close()
+		subprocess.Popen("chmod +x /usr/local/bin/shellgen", shell=True).wait()
+	except Exception as error:
+		print_error(error)
 
 # Grab the latest update
 def update():
@@ -38,7 +50,7 @@ def update():
 
 
 def banner():
-	__version__ = 0.5
+	__version__ = 0.6
 
 	banner = bcolors.DARKGREEN + """
 	███████╗██╗  ██╗███████╗██╗     ██╗      ██████╗ ███████╗███╗   ██╗
@@ -68,6 +80,7 @@ def help_menu():
 	print("\t-h or --help\t\t This help menu")
 	print("\t-u or --update\t\t Run the update and exit")
 	print("\t--shells or --list-shells\t Lists all the available shells")
+	print("\t-c or --create-launcher\t Creates the launcher to run shellgen from anywhere in the terminal (requires sudo privileges)")
 	print("\n\tHow to use shellgen:")
 	print_info("Run: %s <LHOST> <LPORT> <SHELL TYPE>" % str(sys.argv[0]))
 	sys.exit()
@@ -116,7 +129,7 @@ def shellgen():
 	try:
 		os.system("clear")
 		print(banner())
-
+		
 		if '-h' in sys.argv or '--help' in sys.argv:
 			help_menu()
 		elif '-u' in sys.argv or '--update' in sys.argv:
@@ -125,6 +138,10 @@ def shellgen():
 			for i in shells:
 				print_shell_types(i)
 			sys.exit()
+		elif '-c' in sys.argv or '--create-launcher' in sys.argv:
+			print_info("Creating the launcher")
+			create_launcher()
+
 		elif len(sys.argv) == 1:
 			print_info("Usage: %s <LHOST> <LPORT> <SHELL TYPE>" % str(sys.argv[0]))
 		elif len(sys.argv) == 3:
