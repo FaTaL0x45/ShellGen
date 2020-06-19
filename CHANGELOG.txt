@@ -1,4 +1,16 @@
 ~~~~~~~~~~~~
+version: 0.7
+~~~~~~~~~~~~
+
+- Cleared up some code
+- Added ALL SHELLS into src/allshells.py for more clarity when adding new ones
+- Fixed timing on update message
+- Changed the way you pass the input in arguments. Now you can just enter the port and shell type which makes more sense
+- Added two new reverse shells (telnet, ksh) and an entire list of msfvenom payloads/shell codes (src/msfvenompayloads.py)
+- Added the feature for if the user doesn't want to update to skip, else it will pull the latest update
+- Updated README.md
+
+~~~~~~~~~~~~
 version: 0.6
 ~~~~~~~~~~~~
 

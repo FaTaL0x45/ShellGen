@@ -29,8 +29,7 @@ You can choose a specifi payload from the list or enter **all** to print out all
 
 List of things to do:
 
-- Clean up some code (if possible without ruining the program)
-
+- Clean up some code (I seriously need to clean up the scripts)
 
 To request an improvement or new feature:
 - Create an [issue](https://github.com/realagentwhite/ShellGen/issues/new) and mark as `enhancement`

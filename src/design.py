@@ -10,10 +10,17 @@ def print_info(message):
     print((bcolors.RED) + ("[*] ") + (bcolors.YELLOW) + (str(message)))
 
 def print_shell(message):
-    print((bcolors.DARKGREEN) + ("[*] ") + (bcolors.RED) + (str(message)) + (bcolors.ENDC))
+    print((bcolors.DARKGREEN) + ("[*] ") + (bcolors.DARKGREEN) + (str(message)) + (bcolors.ENDC))
 
 def print_error(message):
     print((bcolors.DARKGREEN) + ("[*] ") + (bcolors.RED) + (str(message)) + (bcolors.ENDC))
 
 def print_shell_types(message):
+	print((bcolors.RED) + ("[*] ") + (bcolors.RED) + (str(message)) + (bcolors.ENDC))
+
+def print_list_shells(message):
 	print((bcolors.RED) + ("[*] ") + (bcolors.YELLOW) + (str(message)) + (bcolors.ENDC))
+
+def print_msfvenom_shells(message):
+	print((bcolors.RED) + ("[*] ") + (bcolors.DARKGREEN) + (str(message)) + (bcolors.ENDC))
+
