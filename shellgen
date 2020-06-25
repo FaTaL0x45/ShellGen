@@ -21,8 +21,15 @@ except: pass
 # List of shells available
 shells = ["bash","go","nc","curl","netcat","msfvenom","perl","php","python","powershell","ruby","xterm","telnet"]
 
+# funny random banner
+import random
+funny = random.sample(["Aliens", "Clowns", "Mr. Robot", "Zero Cool", "Goats", "Hackers", "Unicorns"], 1)[0]
+
 def create_launcher():
 	try:
+		if os.geteuid() != 0:
+			print("\nThis needs to be run as root. Please sudo it up! Exiting...")
+			exit()
 		print_info("Creating launcher...")
 		"""
 		Create a launcher to execute shellgen from the commandline.
@@ -55,7 +62,7 @@ def update():
 
 
 def banner():
-	__version__ = '0.8 THIS ONE IS THE BOMB!'
+	__version__ = 0.9
 
 	banner = bcolors.DARKGREEN + """
 	███████╗██╗  ██╗███████╗██╗     ██╗      ██████╗ ███████╗███╗   ██╗
@@ -64,16 +71,21 @@ def banner():
 	╚════██║██╔══██║██╔══╝  ██║     ██║     ██║   ██║██╔══╝  ██║╚██╗██║
 	███████║██║  ██║███████╗███████╗███████╗╚██████╔╝███████╗██║ ╚████║
 	╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝
-	""" +bcolors.ENDC
+	""" + bcolors.ENDC
+
 	banner += """
-	Version: """ + bcolors.YELLOW + str(__version__) + bcolors.DARKGREEN + """\n
+	Version: """ + bcolors.YELLOW + bcolors.BOLD + str(__version__) + bcolors.DARKGREEN + """\n
 	Author: The Joker (@__Th3J0k3r__) (github.com/thejoker3000)
 	Website: https://thegibson.xyz"""
+
 	banner += """
 	Reverse shell generator.
 	This is uses the tun0 IPv4 address.\n\tEnter a specific port after calling the script
 	"""
-	banner += bcolors.RED+ """
+
+	banner += "Welcome to ShellGen - where shells are generated... Because of..." + bcolors.BOLD + funny + bcolors.ENDC + "\n"
+
+	banner += bcolors.RED + bcolors.BOLD + """
 	!!!!!! DISCLAIMER !!!!!!
 	This tool is developed only for legal purposes.
 	Just kidding. Have fun! :-)
@@ -94,28 +106,18 @@ def main():
 		group = argparse.ArgumentParser()
 		
 		group.add_argument("-ip", "--lhost", help="Your IP or hostname")
-		#group.add_argument("--target", "--rhost", help="Target IP or hostname")
 		group.add_argument("-p", "--lport", "--port", help="The port to be used (default will be 4444)")
 		group.add_argument("-s", "--shell", help="Type of reverse shell to use")
 		group.add_argument("-u", "--update", help="When given this argument it will update and continue", action="store_true")
 		group.add_argument("-ls", "--shells", help="Lists all available shells", action="store_true")
-		group.add_argument("-c", "--create-launcher", help="Creates a launcher to run anywhere in terminal (requires sudo)", action="store_true")
-		group.add_argument("--no-update", help="Skip the update check (DO NOT USE - NOT WORKING AS IT SHOULD)", action="store_true")
+		group.add_argument("-c", "--create-launcher", help="Creates a launcher to run anywhere in terminal (REQUIRES SUDO)", action="store_true")
+		group.add_argument("-nu", "--no-update", help="Skip the update check (DO NOT USE - NOT WORKING AS IT SHOULD)", action="store_true")
 		group.add_argument("-m", "--manual", help="Read the manual for guidance (Shows README.md file)", action="store_true")
 		
 		args = group.parse_args()
 
 		if args.update:
 			update()
-
-		'''if args.update and len(sys.argv) > 2:
-			update()			
-			os.system("clear")
-			print(banner())
-		else:
-			print_info("Only updating and I will leave you alone")
-			update()
-			sys.exit()'''
 		
 		if args.create_launcher:
 			create_launcher()
@@ -132,32 +134,35 @@ def main():
 		
 		if args.no_update:
 			update = False
-
+		else:
+			update = True
+		
 		if args.lhost:
 			print_info("Running through checks now...")
-			sleep(1)
-			print_info("IP has been given...")
+			sleep(0.5)
+			print_info("IP has been given... %s" % (bcolors.RED + bcolors.BOLD + args.lhost + bcolors.ENDC))
 			ip = args.lhost
 		else:
-			print_error("No IP was given...")
-			print_info("Using your VPN IP address...")
 			ip = os.popen('ip addr show tun0').read().split("inet ")[1].split("/")[0]
+			print_error("No IP was given...")
+			print_info("Using your VPN IP address... %s" % (bcolors.RED + bcolors.BOLD + ip + bcolors.ENDC))
 			
 		if args.lport:
-			print_info("Port has been given...")
+			print_info("Port has been given... %s" % (bcolors.RED + bcolors.BOLD + str(args.lport) + bcolors.ENDC))
 			port = args.lport
 		else:
-			print_info("No port given but going to use the default (4444)...")
 			port = "4444"
+			print_info("No port given but going to use the default... %s" % (bcolors.RED + bcolors.BOLD + str(port) + bcolors.ENDC))
 
 		if args.shell:
-			print_info("A shell type was given also...")
+			print_info("A shell type was given also... %s" % (bcolors.RED + bcolors.BOLD + args.shell + bcolors.ENDC))
 			if "curl" in args.shell:
 				return_curl_shell()
 				sys.exit()
 			if "msfvenom" in args.shell:
-				target = input("Enter target:~$ "+bcolors.DARKPURPLE);print(bcolors.ENDC)
-				
+				#target = input("Enter target:~$ "+bcolors.DARKPURPLE);print(bcolors.ENDC)
+				from src.msfvenompayloads import msfvenom_shells
+				return msfvenom_shells(ip, port)
 			else:
 				shell = args.shell
 				return_shells(shell, ip, port)
@@ -175,16 +180,26 @@ def main():
 		print()
 		print_error("Aborting all cyber operations")
 		sys.exit()
-	except IndexError as ie:
+	except IndexError as error1:
 		print()
 		print_error("Houston, we have a problem!")
-		print(ie)
+		print(error1)
 		print_error("Make sure you are connected to the VPN or have internet connection")
 		sys.exit()
 
 
 
 if __name__ == "__main__":
-	os.system("clear")
-	print(banner())
-	main()
+	try:
+		if not "--no-update" in sys.argv:
+			update()
+			os.system("clear")
+			print(banner())
+			main()
+		else:
+			os.system("clear")
+			print(banner())
+			main()
+
+	except Exception as error:
+		print(error)

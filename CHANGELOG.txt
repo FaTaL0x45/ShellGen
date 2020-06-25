@@ -2,6 +2,13 @@
 version: 0.8
 ~~~~~~~~~~~~
 
+- Added the function for command '--no-update' so if the user doesn't want to update (aka not waste time)
+- Added some funny random things to the banner (got the idea from TrustedSec PTF)
+
+~~~~~~~~~~~~
+version: 0.8
+~~~~~~~~~~~~
+
 - Cleaned up junky code
 - Implemented the argparse python library to make it easier to use
 - Added some more arguments for the 'help menu'

@@ -4,6 +4,7 @@ class bcolors:
 	YELLOW = '\033[93m'
 	RED = '\033[91m'
 	ENDC = "\033[1;m"
+	BOLD = '\033[1m'
 
 
 def print_info(message):

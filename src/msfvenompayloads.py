@@ -3,9 +3,7 @@ import os
 
 def msfvenom_shells(lhost, lport):
 	print_info("Some shells require the REMOTE HOST IP")
-	rhost = input("Enter the REMOTE HOST (target) IP address: ")
-	os.system("clear")
-	print("")
+	rhost = input("Enter the REMOTE HOST (target) IP address: "+bcolors.DARKPURPLE)
 	print_info("REVERSE SHELLS")
 	
 	print_shell_types("Linux Meterpreter Reverse Shell")

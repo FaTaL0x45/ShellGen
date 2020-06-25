@@ -6,13 +6,15 @@ This is a simple script that will generate a specific or all shellcodes for CTFs
 
 ## INFORMATION
 
-Update has been made from sys library to argparse library.
+Update has been made from sys library to argparse library (done in version 0.8)
 
 ## Usage
 
 For help:
 - `shellgen -h`
 - `shellgen --help`
+
+If you want to skip update and just get the reverse shell, add `--no-update` to your commands and it will skip it.
 
 To update:
 - `./shellgen.py -u`
@@ -24,12 +26,6 @@ List shells available:
 
 An example for using:
 - `shellgen --lhost 10.10.12.3 --lport 1234 --shell netcat`
-
-## TODO
-
-List of things to do:
-
-- Clean up some code if any junky code was left behind
 
 To request an improvement or new feature:
 - Create an [issue](https://github.com/realagentwhite/ShellGen/issues/new) and mark as `enhancement`
