@@ -8,6 +8,10 @@ This is a simple script that will generate a specific or all shellcodes for CTFs
 
 Update has been made from sys library to argparse library (done in version 0.8)
 
+07/07/2020
+If there is any feature you would like to add, you can either let me know or
+create it yourself and do a pull request and also be added to the list of contributors.
+
 ## Usage
 
 For help:
@@ -32,3 +36,8 @@ To request an improvement or new feature:
 
 For issues:
 - Create an [issue](https://github.com/realagentwhite/ShellGen/issues/new) and mark as `bug`
+
+
+# TODO
+
+- Add option to encode shells if needed

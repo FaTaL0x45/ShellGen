@@ -111,7 +111,7 @@ def main():
 		group.add_argument("-u", "--update", help="When given this argument it will update and continue", action="store_true")
 		group.add_argument("-ls", "--shells", help="Lists all available shells", action="store_true")
 		group.add_argument("-c", "--create-launcher", help="Creates a launcher to run anywhere in terminal (REQUIRES SUDO)", action="store_true")
-		group.add_argument("-nu", "--no-update", help="Skip the update check (DO NOT USE - NOT WORKING AS IT SHOULD)", action="store_true")
+		group.add_argument("--no-update", help="Skip the update check (DO NOT USE - NOT WORKING AS IT SHOULD)", action="store_true")
 		group.add_argument("-m", "--manual", help="Read the manual for guidance (Shows README.md file)", action="store_true")
 		
 		args = group.parse_args()
@@ -143,6 +143,7 @@ def main():
 			print_info("IP has been given... %s" % (bcolors.RED + bcolors.BOLD + args.lhost + bcolors.ENDC))
 			ip = args.lhost
 		else:
+			print_info("If you are not sure how to use this, run the tool adding '--help' for help menu\n")
 			ip = os.popen('ip addr show tun0').read().split("inet ")[1].split("/")[0]
 			print_error("No IP was given...")
 			print_info("Using your VPN IP address... %s" % (bcolors.RED + bcolors.BOLD + ip + bcolors.ENDC))
