@@ -62,7 +62,7 @@ def update():
 
 
 def banner():
-	__version__ = 0.9
+	__version__ = 0.9.1
 
 	banner = bcolors.DARKGREEN + """
 	███████╗██╗  ██╗███████╗██╗     ██╗      ██████╗ ███████╗███╗   ██╗
@@ -74,16 +74,22 @@ def banner():
 	""" + bcolors.ENDC
 
 	banner += """
-	Version: """ + bcolors.YELLOW + bcolors.BOLD + str(__version__) + bcolors.DARKGREEN + """\n
+	Version: """ + bcolors.YELLOW + bcolors.BOLD + str(__version__) + bcolors.ENDC +\
+	bcolors.DARKGREEN + """\n
 	Author: The Joker (@__Th3J0k3r__) (github.com/thejoker3000)
 	Website: https://thegibson.xyz"""
 
 	banner += """
 	Reverse shell generator.
-	This is uses the tun0 IPv4 address.\n\tEnter a specific port after calling the script
+	Generates a shellcode to gain access remotley to any
+	machine you have 'compromised'.
+	
+	If you find a bug report it.
+	If you want a new feature, make it or request it
+	
 	"""
 
-	banner += "Welcome to ShellGen - where shells are generated... Because of..." + bcolors.BOLD + funny + bcolors.ENDC + "\n"
+	banner += "Welcome to ShellGen - where shells are generated... Because..." + bcolors.BOLD + funny + bcolors.ENDC + "\n"
 
 	banner += bcolors.RED + bcolors.BOLD + """
 	!!!!!! DISCLAIMER !!!!!!
