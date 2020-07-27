@@ -117,8 +117,8 @@ def main():
 		group.add_argument("-u", "--update", help="When given this argument it will update and continue", action="store_true")
 		group.add_argument("-ls", "--shells", help="Lists all available shells", action="store_true")
 		group.add_argument("-c", "--create-launcher", help="Creates a launcher to run anywhere in terminal (REQUIRES SUDO) | Not required to use if you used trustedsec/ptf", action="store_true")
-		group.add_argument("--no-update", help="Skip the update check (DO NOT USE - NOT WORKING AS IT SHOULD)", action="store_true")
-		group.add_argument("-m", "--manual", help="Read the manual for guidance (Shows README.md file)", action="store_true")
+		group.add_argument("--no-update", help="Skip the update", action="store_true")
+		#group.add_argument("-m", "--manual", help="Read the manual for guidance (Shows README.md file)", action="store_true")
 		
 		args = group.parse_args()
 
