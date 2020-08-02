@@ -134,10 +134,6 @@ def main():
 				print_shell_types(i)
 			sys.exit()
 		
-		if args.manual:
-			os.system("cat README.md | more")
-			sys.exit()
-		
 		if args.no_update:
 			update = False
 		else:
