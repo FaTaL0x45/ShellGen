@@ -40,4 +40,4 @@ For issues:
 
 # TODO
 
-- Add option to encode shells if needed
+- Add option to encode shells if needed (this is maybe)

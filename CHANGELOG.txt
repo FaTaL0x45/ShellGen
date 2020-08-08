@@ -1,5 +1,11 @@
 ~~~~~~~~~~~~
-version: 0.8
+version: 0.9.1
+~~~~~~~~~~~~
+
+- Fixed error when selecting 'all' shells when prompted for what shell to use if not given
+
+~~~~~~~~~~~~
+version: 0.9
 ~~~~~~~~~~~~
 
 - Added the function for command '--no-update' so if the user doesn't want to update (aka not waste time)

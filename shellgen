@@ -175,6 +175,8 @@ def main():
 				print_info("OK. Now I have a shell to use...")
 				return_shells(shell, ip, port)
 				sys.exit()
+			elif shell == 'all':
+				return_shells(shell, ip, port)
 			else:
 				print_error("No shell was given again or shell entered is not available yet.")
 				sys.exit()
