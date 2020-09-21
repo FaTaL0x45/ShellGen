@@ -1,4 +1,11 @@
 ~~~~~~~~~~~~
+version 1.1
+~~~~~~~~~~~~
+
+- Fix the option for starting a listener after generating shellcode
+- Change the description from the banner
+
+~~~~~~~~~~~~
 version: 0.9.1
 ~~~~~~~~~~~~
 
