@@ -1,4 +1,10 @@
 ~~~~~~~~~~~~
+version 1.2
+~~~~~~~~~~~~
+
+- Make the script run the help menu if no input is detected and/or if there is a user input error
+
+~~~~~~~~~~~~
 version 1.1
 ~~~~~~~~~~~~
 
@@ -6,7 +12,7 @@ version 1.1
 - Change the description from the banner
 
 ~~~~~~~~~~~~
-version: 0.9.1
+version: 1.0
 ~~~~~~~~~~~~
 
 - Fixed error when selecting 'all' shells when prompted for what shell to use if not given
