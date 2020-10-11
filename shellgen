@@ -61,11 +61,11 @@ def update():
 	print_info("Trying to update myself first... Then will generate the shellcode...")
 	subprocess.Popen("git pull", shell=True).wait()
 	print_info("Remember, if there was a new update, terminate this session and re-run the script\n")
-	sleep(2)
+	sleep(1)
 
 
 def banner():
-	__version__ = "1.1"
+	__version__ = "1.2"
 
 	banner = bcolors.DARKGREEN + """
 	███████╗██╗  ██╗███████╗██╗     ██╗      ██████╗ ███████╗███╗   ██╗
@@ -204,32 +204,23 @@ def main():
 			shell = args.shell
 			return_shells(shell, ip, port)
 		else:
-			print_error("Something went wrong!")
+			os.system("shellgen --help --no-update")
+
+			'''print_error("Something went wrong!")
 			try: print(bcolors.BOLDGREEN + "[i] " + bcolors.ENDC + "Local Port: " + bcolors.BOLDRED + args.lport + bcolors.ENDC)
 			except: print(bcolors.BOLD + bcolors.RED + "[!]" + bcolors.ENDC + " Port not given")
 			try: print(bcolors.BOLDGREEN + "[i] " + bcolors.ENDC + "Local host: " + bcolors.BOLDRED + args.lhost + bcolors.ENDC)
 			except: print(bcolors.BOLDRED + "[!]" + bcolors.ENDC + " Local IP not given")
 			try: print(bcolors.BOLDGREEN + "[i] " + bcolors.ENDC + "Type of shell: " + bcolors.BOLDRED + args.shell + bcolors.ENDC)
-			except: print(bcolors.BOLDRED + "[!]" + bcolors.ENDC + " Shell not given")
+			except: print(bcolors.BOLDRED + "[!]" + bcolors.ENDC + " Shell not given")'''
 
 
 		if args.start_listener:
 			if not args.lport:
 				print_info("Make sure you gave me the port to listen on.")
 				sys.exit()
+			print_info("Starting listener on port %s" %str(args.lport))
 			os.system('nc -lnvp {}'.format(port))
-			'''run_listener = input("Would you like to start a listener now? (Y/n) ").lower()
-			if run_listener == 'y':
-				c = input('Select your payload, press "l" to listen on port {} or enter to exit: '.format(port))
-				if c == 'l':
-					if int(port) < 1024:
-						system('sudo nc -n -v -l -s {} -p {}'.format(ipaddr, port))
-					else:
-						system('nc -n -v -l -s {} -p {}'.format(ipaddr, port))
-			else:
-				print("Ok. Exiting now!")
-				sys.exit()'''
-
 	
 	except KeyboardInterrupt:
 		print()
