@@ -1,11 +1,13 @@
 class bcolors:
 	DARKPURPLE = "\033[1;35m"
-	DARKGREEN = '\033[92m'
-	YELLOW = '\033[93m'
-	RED = '\033[91m'
-	ENDC = "\033[1;m"
-	BOLD = '\033[1m'
+	DARKGREEN  = '\033[92m'
+	YELLOW     = '\033[93m'
+	RED        = '\033[91m'
+	ENDC       = "\033[1;m"
+	BOLD       = '\033[1m'
 
+	BOLDGREEN = BOLD+DARKGREEN
+	BOLDRED   = BOLD + RED
 
 def print_info(message):
     print((bcolors.RED) + ("[*] ") + (bcolors.YELLOW) + (str(message)))
