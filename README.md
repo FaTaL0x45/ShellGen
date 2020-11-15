@@ -2,7 +2,7 @@
 
 # ShellGen (Shell Generator)
 
-This is a simple script that will generate a specific or all shellcodes for CTFs using the VPN IP address on tun0 (the IPv4).
+This is a simple script that will generate a specific or all shellcodes for CTFs or any other thing.
 
 **Latest Release** v1.3
 
