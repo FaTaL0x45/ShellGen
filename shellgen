@@ -72,6 +72,9 @@ def check_new_version():
 
 	return new_version
 
+def clear():
+	os.system("clear")
+
 def banner():
 	banner = bcolors.DARKGREEN + """
 	███████╗██╗  ██╗███████╗██╗     ██╗      ██████╗ ███████╗███╗   ██╗
@@ -83,7 +86,7 @@ def banner():
 	""" + bcolors.ENDC
 
 	banner += """
-	Current Version: """ + bcolors.YELLOW + bcolors.BOLD + str(__version__) + bcolors.ENDC
+	Current Version: """ + bcolors.YELLOW + bcolors.BOLD + __version__ + bcolors.ENDC
 	
 	if check_new_version() > __version__:
 		new_version = bcolors.YELLOW + str(check_new_version()) + bcolors.ENDC
@@ -159,7 +162,7 @@ def verify_ip(ip):
 		print(bcolors.BOLDGREEN + "[*] " + bcolors.ENDC + "IP address is valid")
 		return True
 	else:
-		print(bcolors.BOLDRED + "[!] " + bcolors.ENDC + "Invalid Ip address. Please try again...")
+		#print(bcolors.BOLDRED + "[!] " + bcolors.ENDC + "Invalid Ip address. Please try again...")
 		return False
 
 def main():
@@ -182,11 +185,8 @@ def main():
 		if args.update:
 			update()
 		
-		#if args.create_launcher==False and  args.lhost==None and  args.lport==None and args.no_update==True and args.shell==None and args.shells==False and args.start_listener==False and args.update==False:
-		#	os.system("shellgen --help --no-update")
-
-		if len(sys.argv) <= 2:
-			os.system("shellgen --help --no-update")
+		if args.create_launcher==False and  args.lhost==None and  args.lport==None and args.no_update==True and args.shell==None and args.shells==False and args.start_listener==False and args.update==False:
+			print(bcolors.BOLDRED + "[!]" + bcolors.ENDC + bcolors.YELLOW + " Please run with '-h' or '--help' for help")
 			sys.exit()
 
 		if args.create_launcher:
@@ -211,11 +211,11 @@ def main():
 			update = True
 		
 		if args.lhost:
-			if verify_ip(args.lhost) == True:
+			ip = args.lhost
+			if verify_ip(ip) == True:
 				pass
 			else:
-				#get_ip_interfaces(args.lhost)
-				ip = get_ip_interfaces(args.lhost)
+				ip = get_ip_interfaces(ip)
 
 			if args.lport and args.shell:
 				port = args.lport
@@ -235,14 +235,6 @@ def main():
 				shell = args.shell
 				return_shells(shell, ip, port)
 
-			'''print_error("Something went wrong!")
-			try: print(bcolors.BOLDGREEN + "[i] " + bcolors.ENDC + "Local Port: " + bcolors.BOLDRED + args.lport + bcolors.ENDC)
-			except: print(bcolors.BOLD + bcolors.RED + "[!]" + bcolors.ENDC + " Port not given")
-			try: print(bcolors.BOLDGREEN + "[i] " + bcolors.ENDC + "Local host: " + bcolors.BOLDRED + args.lhost + bcolors.ENDC)
-			except: print(bcolors.BOLDRED + "[!]" + bcolors.ENDC + " Local IP not given")
-			try: print(bcolors.BOLDGREEN + "[i] " + bcolors.ENDC + "Type of shell: " + bcolors.BOLDRED + args.shell + bcolors.ENDC)
-			except: print(bcolors.BOLDRED + "[!]" + bcolors.ENDC + " Shell not given")'''
-		
 		if args.start_listener:
 			if not args.lport:
 				print_info("Make sure you gave me the port to listen on.")
@@ -266,6 +258,7 @@ def main():
 
 if __name__ == "__main__":
 	try:
+		print(len(sys.argv))
 		secret_list = ["covid","covid19","covid-19","2020","year2020"]
 		if sys.argv[-1] in secret_list:
 			print("COVID-19 happened back in 2019-2020 that killed thousands of people")
@@ -273,9 +266,11 @@ if __name__ == "__main__":
 			sys.exit()
 		if not "--no-update" in sys.argv:
 			update()
+			clear()
 			print(banner())
 			main()
 		else:
+			clear()
 			print(banner())
 			main()
 
