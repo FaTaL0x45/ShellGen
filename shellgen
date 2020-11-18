@@ -167,7 +167,6 @@ def verify_ip(ip):
 
 def main():
 	try:
-
 		global update
 		group = argparse.ArgumentParser()
 		
@@ -185,9 +184,9 @@ def main():
 		if args.update:
 			update()
 		
-		if args.create_launcher==False and  args.lhost==None and  args.lport==None and args.no_update==True and args.shell==None and args.shells==False and args.start_listener==False and args.update==False:
+		'''if args.create_launcher==False and  args.lhost==None and  args.lport==None and args.no_update==True and args.shell==None and args.shells==False and args.start_listener==False and args.update==False:
 			print(bcolors.BOLDRED + "[!]" + bcolors.ENDC + bcolors.YELLOW + " Please run with '-h' or '--help' for help")
-			sys.exit()
+			sys.exit()'''
 
 		if args.create_launcher:
 			create_launcher()
@@ -205,10 +204,11 @@ def main():
 						listshells.append(shell)
 						print_shell(shell)
 			sys.exit()
-		if args.no_update:
+
+		'''if args.no_update:
 			update = False
 		else:
-			update = True
+			update = True'''
 		
 		if args.lhost:
 			ip = args.lhost
@@ -219,19 +219,16 @@ def main():
 
 			if args.lport and args.shell:
 				port = args.lport
-				#ip = args.lhost
 				shell = args.shell
 				return_shells(shell, ip, port)
 			elif args.lport and not args.shell:
 				print_info("No shell was given so will display all shells available")
-				#ip = args.lhost
 				port = args.lport
 				shell = 'all'
 				return_shells(shell, ip, port)
 			elif args.shell and not args.lport:
 				print_info("Port was not provided but will use the default port '4444'")
 				port = '4444'
-				#ip = args.lhost
 				shell = args.shell
 				return_shells(shell, ip, port)
 
@@ -240,6 +237,7 @@ def main():
 				print_info("Make sure you gave me the port to listen on.")
 				sys.exit()
 			print_info("Starting listener on port %s" %str(args.lport))
+			print(bcolors.ENDC)
 			os.system('nc -lnvp {}'.format(port))
 	
 		
@@ -258,21 +256,21 @@ def main():
 
 if __name__ == "__main__":
 	try:
-		print(len(sys.argv))
-		secret_list = ["covid","covid19","covid-19","2020","year2020"]
-		if sys.argv[-1] in secret_list:
-			print("COVID-19 happened back in 2019-2020 that killed thousands of people")
-			print("The world since then has never been the same and never will")
+		if len(sys.argv) <= 1 or '--no-update' in sys.argv and len(sys.argv) <= 2:
+			os.system("./shellgen --no-update --help")
 			sys.exit()
-		if not "--no-update" in sys.argv:
-			update()
-			clear()
-			print(banner())
-			main()
 		else:
-			clear()
-			print(banner())
-			main()
+			if not "--no-update" in sys.argv:
+				update()
+				clear()
+				print(banner())
+				main()
+			else:
+				clear()
+				print(banner())
+				main()
+
 
 	except Exception as error:
 		print(error)
+		sys.exit()

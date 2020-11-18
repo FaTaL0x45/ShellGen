@@ -4,6 +4,10 @@ version 1.3.1
 
 - There was a mistake I made when no arguments given, it should have displayed help menu but it didn't (quit working somwhere in v1.1 I belive)
 
+  Second fase commit
+  - I screwed up some code
+  - Was able to fix the issue and now it's all good. Just run `git pull` in the directory that this tool is located in
+
 ~~~~~~~~~~~~
 version 1.3
 ~~~~~~~~~~~~
