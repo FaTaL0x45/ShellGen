@@ -1,4 +1,5 @@
-from src.design import print_error, print_info, print_msfvenom_shells, print_shell_types, bcolors, print_msfvenom_shells
+#from src.design import print_error, print_info, print_msfvenom_shells, print_shell_types, bcolors, print_msfvenom_shells
+from src.design import *
 import os
 
 def msfvenom_shells(lhost, lport):
